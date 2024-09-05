@@ -1,3 +1,6 @@
+variables:
+    IMAGE_NAME: muhammadsziyad/docker-nodejs-fullstack-backend
+
 run_test:
   image: bitnami/node
   before_script:
@@ -5,3 +8,14 @@ run_test:
   script:
     - npm test
 
+build_images:
+  image: docker
+  services:
+    - docker:27.2-dind
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"
+  before_script:
+    - docker login -u $REGISTRY_USER -p $REGISTRY_PASS
+  script:
+    - docker build -t $IMAGE_NAME .
+    - docker push $IMAGE_NAME
