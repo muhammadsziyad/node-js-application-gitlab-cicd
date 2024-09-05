@@ -30,6 +30,8 @@ build_images:
 
 deploy:
   stage: deploy
+  before_script:
+    - chmood 400 $SSH_KEY
   script:
     - ssh -o StrictHostKeyChecking=no -i $SSH_KEY root@202.10.41.81 "
         docker login -u $REGISTRY_USER -p $REGISTRY_PASS &&
