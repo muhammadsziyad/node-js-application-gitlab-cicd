@@ -1,5 +1,5 @@
 variables:
-    IMAGE_NAME: muhammadsziyad/docker-nodejs-fullstack-backend
+    IMAGE_NAME: muhammadsziyad/docker-nodejs-fullstack-backend:v1
 
 run_test:
   image: bitnami/node
