@@ -1,8 +1,10 @@
 variables:
     IMAGE_NAME: muhammadsziyad/docker-nodejs-fullstack-backend:v1
+    CONTAINER_NAME : web
 
 stages:
   - test
+  - docker_check
   - build
   - deploy
 
@@ -21,6 +23,28 @@ lint_test:
     - npm install eslint @eslint/js eslint-plugin-jest
   script:
     - npx eslint .
+
+
+check_if_container_exists:
+  stage: docker_check
+  image: docker:latest  # Use Docker to run this job
+  services:
+    - docker:27.2-dind  # Docker-in-Docker service
+  script:
+    - echo "Checking if container exists..."
+    # Check if container is already running
+    - if [ $(docker ps -q -f name=$CONTAINER_NAME) ]; then
+        echo "Container is already running.";
+      else
+        echo "Container is not running.";
+      fi
+    # Check if container exists but is stopped
+    - if [ $(docker ps -aq -f status=exited -f name=$CONTAINER_NAME) ]; then
+        echo "Container exists but is stopped.";
+        echo "Removing stopped container...";
+        docker rm $CONTAINER_NAME;
+      fi
+
 
 build_images:
   stage: build
@@ -43,8 +67,8 @@ deploy:
   script:
     - ssh -o StrictHostKeyChecking=no -i $SSH_KEY root@202.10.41.81 "
         docker login -u $REGISTRY_USER -p $REGISTRY_PASS &&
-        docker stop $(docker ps -a -q) | docker rm $(docker ps -a -q) &&
-        docker run -d -p 3000:3000 $IMAGE_NAME" 
+        docker run -d --name web -p 3000:3000 $IMAGE_NAME" 
 
 #docker ps -aq | xargs docker stop | xargs docker rm &&
+## docker stop $(docker ps -a -q) ; docker rm $(docker ps -a -q) &&
 
