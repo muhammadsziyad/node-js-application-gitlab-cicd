@@ -14,6 +14,14 @@ run_test:
   script:
     - npm test
 
+lint_test:
+  stage: test
+  image: bitnami/node
+  before_script:
+    - npm install eslint @eslint/js eslint-plugin-jest
+  script:
+    - npx eslint .
+
 build_images:
   stage: build
   image: docker
