@@ -1,6 +1,17 @@
 ## NODE JS Application with GITLAB CI/CD PIPELINE
 Let's build CI/CD piple with nodejs.
 
+```mermaid
+flowchart LR
+    A[Source Code] -->|Pushes to GitLab| B[GitLab CI/CD Pipeline]
+    B -->|Runs| C[Build Stage]
+    C -->|Creates Artifact| D[Test Stage]
+    D -->|Executes Tests| E[Test Results]
+    E -->|Prepares for| F[Deploy Stage]
+    F -->|Deploys to| G[Deployment Environment]
+
+```
+
 This CI/CD piple line include
 - Running testing
 - Lint Testing
